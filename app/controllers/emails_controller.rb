@@ -5,7 +5,16 @@ class EmailsController < ApplicationController
   end
 
   def create_send_email
-    parsed = JSON.parse(request.body.read)
-    UserEmail.deliver_send_email(parsed["to"], parsed["subject"], parsed["body"]).deliver
+    if request.body.nil?
+      p("No Request Body!")
+    else
+      parsed = JSON.parse(request.body.read)
+
+      if parsed["to"].nil? or parsed["subject"].nil? or parsed["body"].nil?
+        p("Missing parameters to generate email")
+      else
+        UserEmail.deliver_send_email(parsed["to"], parsed["subject"], parsed["body"]).deliver
+      end
+    end
   end
 end
